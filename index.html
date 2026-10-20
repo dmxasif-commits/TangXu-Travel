@@ -34,6 +34,15 @@
         <a class="btn" href="#choose">Choose your country →</a>
         <a class="btn ghost" href="#story">Discover Xi'an</a>
       </div>
+      <form class="planner" id="planner">
+        <label>Where are you from?
+          <select name="c"><option value="malaysia.html">🇲🇾 Malaysia</option><option value="usa.html">🇺🇸 USA</option><option value="#custom">🌍 Other country</option></select>
+        </label>
+        <label>When?
+          <select name="m"><option>Any month</option><option>Spring</option><option>Summer</option><option>Autumn</option><option>Winter</option></select>
+        </label>
+        <button class="btn" type="submit">Find my journey →</button>
+      </form>
       <div class="stats">
         <div class="stat"><b>3,000+</b><span>years of history</span></div>
         <div class="stat"><b>8,000</b><span>Terracotta warriors</span></div>
@@ -55,6 +64,16 @@
         </div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- DESTINATION TILES -->
+<section id="places" style="padding:0">
+  <div class="tiles">
+    <a class="tile" href="usa.html" style="--c1:#b8302a;--c2:#4a0f14"><span class="chip">from $1,450</span><span class="e">🏺</span><h3>Terracotta Army</h3><div class="more"><p>Walk beside 8,000 warriors with a private historian.</p><b>USA journeys →</b></div></a>
+    <a class="tile" href="malaysia.html" style="--c1:#1d7a5f;--c2:#0e3b2f"><span class="chip">from ¥3,800</span><span class="e">🕌</span><h3>Great Mosque</h3><div class="more"><p>Halal food trail and prayer-friendly days in the Muslim Quarter.</p><b>Malaysia journeys →</b></div></a>
+    <a class="tile" href="usa.html#timeline" style="--c1:#c8952b;--c2:#6b4710"><span class="chip">Tang 652 AD</span><span class="e">🏯</span><h3>Wild Goose Pagoda</h3><div class="more"><p>The Tang capital at golden hour, then lantern-lit by night.</p><b>Explore history →</b></div></a>
+    <a class="tile" href="#custom" style="--c1:#3b5a74;--c2:#15222e"><span class="chip">Custom</span><span class="e">🧱</span><h3>Ming City Wall</h3><div class="more"><p>Cycle 14 km of wall. Tell us your dates, we design the rest.</p><b>Plan it →</b></div></a>
   </div>
 </section>
 
@@ -160,5 +179,8 @@
 </div></footer>
 
 <script src="assets/app.js"></script>
+<script>
+document.getElementById("planner").addEventListener("submit",function(e){e.preventDefault();location.href=this.c.value;});
+</script>
 </body>
 </html>

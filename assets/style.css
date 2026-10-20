@@ -222,3 +222,22 @@ body.t-us { --accent: #e8bd62; --bg: #1a0d10; }
   .ring, .lantern, .float-wa { animation: none; }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* planner bar (inspired by search-bar hero layout) */
+.planner { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-top: 34px; padding: 14px; border-radius: 18px; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.16); backdrop-filter: blur(8px); max-width: 560px; }
+.planner label { display: grid; gap: 4px; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); flex: 1 1 150px; }
+.planner select { background: rgba(0,0,0,.3); color: var(--text); border: 1px solid rgba(255,255,255,.2); border-radius: 10px; padding: 12px; font: inherit; text-transform: none; letter-spacing: 0; font-size: .95rem; }
+.planner select option { color: #000; }
+
+/* expanding destination tiles */
+.tiles { display: flex; height: min(560px, 90vh); }
+.tile { position: relative; flex: 1; display: flex; flex-direction: column; justify-content: flex-end; padding: 34px 28px; overflow: hidden; background: linear-gradient(170deg, var(--c1), var(--c2)); transition: flex .6s cubic-bezier(.2,.8,.2,1); border-right: 1px solid rgba(255,255,255,.1); }
+.tile:hover { flex: 2.2; }
+.tile .e { position: absolute; top: 28px; left: 28px; font-size: 3.4rem; transition: transform .6s; }
+.tile:hover .e { transform: scale(1.35) translateZ(0) rotate(-6deg); }
+.tile .chip { position: absolute; top: 34px; right: 24px; border: 1px solid rgba(255,255,255,.5); padding: 5px 12px; border-radius: 6px; font-size: .78rem; letter-spacing: .08em; }
+.tile h3 { font-size: 2rem; text-transform: uppercase; font-weight: 500; letter-spacing: .06em; font-family: var(--font-body); font-size: 1.35rem; }
+.tile .more { max-height: 0; opacity: 0; overflow: hidden; transition: max-height .6s, opacity .6s; font-size: .95rem; margin-top: 8px; }
+.tile:hover .more, .tile:focus-visible .more { max-height: 140px; opacity: 1; }
+.tile .more b { display: block; margin-top: 10px; color: var(--gold-2); }
+@media (max-width: 760px) { .tiles { flex-direction: column; height: auto; } .tile { min-height: 190px; } .tile .more { max-height: 140px; opacity: 1; } }
