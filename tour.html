@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Xi'an 3D Journey Planner — Tang Xu Travel</title>
+<meta name="description" content="Fly across Xi'an on a 3D map, arrive at each landmark, and build your own private journey.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="assets/tour.css">
+</head>
+<body class="tour-page">
+
+<header class="nav"><div class="wrap">
+  <a class="brand" href="index.html"><span class="seal">唐</span>Tang Xu Travel</a>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="tour.html" class="on">3D Tour</a></li>
+    <li><a href="malaysia.html">Malaysia</a></li>
+    <li><a href="usa.html">USA</a></li>
+  </ul>
+  <a class="btn" href="#plan">My journey</a>
+</div></header>
+
+<main class="tour">
+  <div class="viewport" id="viewport">
+    <div class="sky"></div>
+    <div class="cam" id="cam">
+      <div class="plane" id="plane">
+        <div class="world" id="world">
+          <svg class="map" viewBox="0 0 1000 700" id="mapsvg" aria-hidden="true">
+            <defs>
+              <radialGradient id="land" cx="50%" cy="50%" r="70%"><stop offset="0" stop-color="#3a3044"/><stop offset="1" stop-color="#241f2b"/></radialGradient>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="rgba(255,255,255,.05)"/></pattern>
+              <filter id="soft"><feGaussianBlur stdDeviation="6"/></filter>
+            </defs>
+            <rect width="1000" height="700" fill="url(#land)"/>
+            <rect width="1000" height="700" fill="url(#grid)"/>
+            <!-- river / mountains hint -->
+            <path d="M0 640 C200 600 300 680 520 650 S860 600 1000 640 V700 H0Z" fill="#14513f" opacity=".5"/>
+            <path d="M620 40 C700 10 820 20 900 70 S1000 110 1000 110 V0 H620Z" fill="#14513f" opacity=".35"/>
+            <!-- Ming city wall -->
+            <rect x="370" y="210" width="280" height="270" rx="6" fill="rgba(200,149,43,.07)" stroke="#c8952b" stroke-width="5"/>
+            <rect x="382" y="222" width="256" height="246" rx="3" fill="none" stroke="rgba(200,149,43,.4)" stroke-dasharray="4 6"/>
+            <!-- inner streets -->
+            <path d="M510 210V480M370 345H650" stroke="rgba(255,255,255,.14)" stroke-width="3"/>
+            <path d="M440 210V480M580 210V480M370 280H650M370 410H650" stroke="rgba(255,255,255,.06)" stroke-width="2"/>
+            <text x="510" y="200" class="lbl">CITY WALL · 14 km</text>
+            <text x="880" y="395" class="lbl dim">LINTONG · 42 km east</text>
+            <text x="150" y="150" class="lbl dim">AIRPORT · XIY</text>
+            <g id="routeLayer"></g>
+          </svg>
+          <div id="pins"></div>
+          <div class="traveller" id="traveller"><span>✈</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="vignette"></div>
+
+    <div class="hud top">
+      <div>
+        <p class="eyebrow">Xi'an · interactive 3D journey</p>
+        <h1 class="hud-title">Tap a landmark to <em>fly there</em></h1>
+      </div>
+      <div class="persona" role="group" aria-label="Travelling from">
+        <button class="on" data-p="my">🇲🇾 Malaysia</button>
+        <button data-p="us">🇺🇸 USA</button>
+      </div>
+    </div>
+
+    <div class="hud bottom">
+      <button class="btn" id="play">▶ Play full tour</button>
+      <button class="btn ghost" id="reset">⟲ Overview</button>
+      <div class="progress" id="progress"></div>
+    </div>
+
+    <aside class="arrive" id="arrive" aria-live="polite">
+      <div class="ph" id="ph"><div class="ph-img" id="phImg"></div><span class="arr-badge">✔ ARRIVED</span></div>
+      <div class="body">
+        <p class="eyebrow" id="aKicker"></p>
+        <h2 id="aTitle"></h2>
+        <p id="aText"></p>
+        <p class="persona-note" id="aNote"></p>
+        <div class="meta"><span id="aDur"></span><span id="aPrice"></span></div>
+        <button class="btn" id="aAdd">+ Add to my journey</button>
+        <p class="credit" id="aCredit"></p>
+      </div>
+    </aside>
+  </div>
+</main>
+
+<section id="plan" class="plan">
+  <div class="wrap grid g2" style="align-items:start">
+    <div>
+      <p class="eyebrow">Your journey</p>
+      <h2>Build it stop by stop</h2>
+      <p class="lead" style="margin-top:14px">Add landmarks from the map. We turn your route into a private itinerary and a transparent quote.</p>
+      <ol class="route-list" id="routeList"><li class="empty">Nothing yet — tap a landmark and press “Add to my journey”.</li></ol>
+    </div>
+    <div class="card" style="position:sticky;top:90px">
+      <div class="sum"><span>Days</span><b id="sDays">0</b></div>
+      <div class="sum"><span>Stops</span><b id="sStops">0</b></div>
+      <div class="sum big"><span>Estimated, per person</span><b id="sPrice">—</b></div>
+      <p class="note">Sample estimate for layout. Tang Xu Travel confirms final prices and inclusions.</p>
+      <a class="btn" id="sCta" href="malaysia.html#quote" style="margin-top:14px">Get my quote →</a>
+    </div>
+  </div>
+</section>
+
+<section class="credits">
+  <div class="wrap">
+    <p class="eyebrow">Photo credits</p>
+    <ul id="creditList"></ul>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <span>© 2026 Tang Xu Travel · Xi'an, China</span>
+  <span><a href="index.html">Home</a> · <a href="malaysia.html">Malaysia</a> · <a href="usa.html">USA</a></span>
+</div></footer>
+
+<script src="assets/credits.js"></script>
+<script src="assets/tour.js"></script>
+</body>
+</html>

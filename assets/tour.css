@@ -1,0 +1,119 @@
+.tour-page { background: #15121a; }
+.tour { padding-top: 68px; }
+.viewport {
+  position: relative; height: calc(100vh - 68px); min-height: 620px; overflow: hidden;
+  background: #0f0c14; perspective: 1300px; perspective-origin: 50% 30%;
+}
+.sky { position: absolute; inset: 0; background: radial-gradient(70% 55% at 50% 0%, rgba(200,149,43,.28), transparent 70%), linear-gradient(#1e1b24, #0f0c14); }
+.cam { position: absolute; inset: 0; transform-style: preserve-3d; }
+.plane {
+  position: absolute; left: 0; top: 0; width: 100%; height: 100%;
+  transform-style: preserve-3d; transform-origin: 50% 60%;
+  transform: rotateX(var(--rx, 52deg)) rotateZ(var(--rz, -6deg));
+  transition: transform 1.8s cubic-bezier(.65,0,.25,1);
+}
+.world { position: absolute; left: 0; top: 0; width: 1000px; height: 700px; transform-origin: 0 0; transform-style: preserve-3d; transition: transform 1.8s cubic-bezier(.65,0,.25,1); }
+.map { position: absolute; inset: 0; width: 1000px; height: 700px; border-radius: 24px; box-shadow: 0 60px 120px rgba(0,0,0,.6), 0 0 0 2px rgba(200,149,43,.35); }
+.map .lbl { fill: #e8bd62; font: 700 12px "DM Sans", sans-serif; letter-spacing: .3em; text-anchor: middle; }
+.map .lbl.dim { fill: rgba(245,240,232,.45); }
+.vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(80% 70% at 50% 55%, transparent 50%, rgba(10,8,14,.75)); }
+
+/* pins stand upright on the tilted plane */
+.pin {
+  position: absolute; width: 0; height: 0; transform-style: preserve-3d; cursor: pointer;
+}
+.pin .stem {
+  position: absolute; left: 0; top: 0; transform-origin: 0 0;
+  transform: rotateZ(calc(var(--rz, -6deg) * -1)) rotateX(calc(var(--rx, 52deg) * -1)) scale(var(--inv, 1));
+  transform-style: preserve-3d;
+}
+.pin .dot {
+  position: absolute; left: -22px; top: -64px; width: 44px; height: 44px; border-radius: 50% 50% 50% 0; rotate: -45deg;
+  background: var(--c, #b8302a); border: 3px solid #f5f0e8; box-shadow: 0 10px 24px rgba(0,0,0,.6), 0 0 0 0 var(--c);
+  transition: transform .3s; animation: pinpulse 2.6s infinite;
+}
+.pin .dot i { position: absolute; inset: 0; display: grid; place-items: center; rotate: 45deg; font-style: normal; font-size: 1.15rem; }
+.pin .tag {
+  position: absolute; left: 0; top: -78px; transform: translate(-50%, -100%); white-space: nowrap;
+  background: rgba(21,18,26,.9); color: #f5f0e8; border: 1px solid rgba(255,255,255,.2); padding: 5px 12px; border-radius: 8px; font-size: .78rem; font-weight: 700; letter-spacing: .05em;
+}
+.pin:hover .dot, .pin.on .dot { transform: scale(1.25) translateY(-4px); }
+.pin.visited .dot { background: #1d7a5f; }
+.pin.on .tag { background: #c8952b; color: #1e1b24; }
+.pin .shadow { position: absolute; left: -16px; top: -8px; width: 32px; height: 16px; border-radius: 50%; background: rgba(0,0,0,.5); filter: blur(3px); }
+@keyframes pinpulse { 70% { box-shadow: 0 10px 24px rgba(0,0,0,.6), 0 0 0 16px rgba(184,48,42,0); } }
+
+.traveller { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-style: preserve-3d; pointer-events: none; }
+.traveller span {
+  position: absolute; left: -20px; top: -50px; width: 40px; height: 40px; border-radius: 50%; background: #f5f0e8; color: #b8302a;
+  display: grid; place-items: center; font-size: 1.3rem; box-shadow: 0 12px 24px rgba(0,0,0,.6), 0 0 0 6px rgba(245,240,232,.25);
+  transform: rotateZ(calc(var(--rz, -6deg) * -1)) rotateX(calc(var(--rx, 52deg) * -1)) scale(var(--inv, 1));
+  transform-origin: 20px 50px;
+}
+
+/* HUD */
+.hud { position: absolute; left: 0; right: 0; z-index: 5; display: flex; gap: 16px; padding: 0 28px; pointer-events: none; }
+.hud > * { pointer-events: auto; }
+.hud.top { top: 24px; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; }
+.hud.bottom { bottom: 24px; align-items: center; flex-wrap: wrap; }
+.hud-title { font-size: clamp(1.8rem, 3.6vw, 3rem); margin-top: 6px; text-shadow: 0 4px 30px rgba(0,0,0,.6); }
+.hud-title em { color: #e8bd62; }
+.persona { display: flex; background: rgba(21,18,26,.75); border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 4px; backdrop-filter: blur(10px); }
+.persona button { background: none; border: 0; color: #f5f0e8; padding: 10px 18px; border-radius: 999px; font: inherit; font-weight: 700; cursor: pointer; }
+.persona button.on { background: #e8bd62; color: #1e1b24; }
+.progress { display: flex; gap: 8px; margin-left: auto; }
+.progress i { width: 34px; height: 5px; border-radius: 3px; background: rgba(255,255,255,.25); transition: background .4s; cursor: pointer; }
+.progress i.v { background: #1d7a5f; }
+.progress i.on { background: #e8bd62; }
+
+/* arrival card */
+.arrive {
+  position: absolute; z-index: 6; right: 28px; top: 118px; max-height: calc(100% - 200px); overflow-y: auto; width: min(400px, calc(100% - 56px));
+  background: #1e1b24; border: 1px solid rgba(255,255,255,.14); border-radius: 22px; overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,.6);
+  transform: translateX(120%) rotateY(-25deg); opacity: 0; transform-origin: right center; transition: transform .9s cubic-bezier(.2,.9,.2,1), opacity .6s;
+  perspective: 900px;
+}
+.arrive.show { transform: none; opacity: 1; }
+.ph { position: relative; height: 190px; overflow: hidden; background: #2b2631; }
+.ph-img { position: absolute; inset: -6%; background-size: cover; background-position: center; animation: kenburns 14s ease-in-out infinite alternate; transition: transform .2s; }
+@keyframes kenburns { from { scale: 1; } to { scale: 1.12; translate: -2% -2%; } }
+.arr-badge { position: absolute; left: 14px; bottom: 14px; background: #1d7a5f; color: #fff; font-size: .72rem; font-weight: 800; letter-spacing: .14em; padding: 6px 12px; border-radius: 999px; animation: pop .6s .5s backwards cubic-bezier(.2,1.6,.4,1); }
+@keyframes pop { from { transform: scale(0); } }
+.arrive .body { padding: 18px 22px 20px; display: grid; gap: 8px; }
+.arrive h2 { font-size: 2rem; }
+.arrive p { color: #cfc8bb; font-size: .95rem; }
+.arrive .persona-note { color: #e8bd62; font-weight: 600; font-size: .9rem; border-left: 3px solid #e8bd62; padding-left: 12px; }
+.arrive .meta { display: flex; gap: 14px; font-size: .82rem; color: #b9b2a6; }
+.arrive .meta span { background: rgba(255,255,255,.07); padding: 5px 10px; border-radius: 8px; }
+.arrive .btn[disabled] { opacity: .6; pointer-events: none; }
+.credit { font-size: .68rem !important; color: #7d766c !important; }
+.credit a { text-decoration: underline; }
+@media (max-width: 760px) {
+  .arrive { right: 12px; left: 12px; width: auto; top: auto; bottom: 80px; }
+  .ph { height: 130px; }
+  .arrive h2 { font-size: 1.5rem; }
+  .hud { padding: 0 14px; }
+  .progress { display: none; }
+}
+
+/* plan */
+.plan { background: var(--cream); color: var(--ink); }
+.plan .lead { color: #5a5348; }
+.plan .eyebrow { color: var(--red); }
+.plan .card { background: #fffdf8; color: var(--ink); border-color: rgba(0,0,0,.08); box-shadow: 0 20px 50px rgba(60,40,10,.1); }
+.route-list { list-style: none; counter-reset: s; margin-top: 30px; display: grid; gap: 14px; }
+.route-list li { counter-increment: s; background: #fffdf8; border: 1px solid rgba(0,0,0,.08); border-radius: 16px; padding: 16px 18px 16px 64px; position: relative; box-shadow: 0 10px 26px rgba(60,40,10,.06); animation: slidein .5s backwards; }
+.route-list li:not(.empty)::before { content: counter(s); position: absolute; left: 16px; top: 50%; translate: 0 -50%; width: 34px; height: 34px; border-radius: 50%; background: var(--red); color: #fff; display: grid; place-items: center; font-weight: 800; }
+.route-list li b { display: block; font-family: var(--font-display); font-size: 1.3rem; }
+.route-list li small { color: #7a7266; }
+.route-list li button { position: absolute; right: 14px; top: 50%; translate: 0 -50%; border: 0; background: none; font-size: 1.1rem; cursor: pointer; color: #9a9185; }
+.route-list li.empty { padding: 20px; color: #7a7266; }
+@keyframes slidein { from { opacity: 0; transform: translateX(-24px) rotateX(20deg); } }
+.sum { display: flex; justify-content: space-between; align-items: baseline; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,.08); color: #5a5348; }
+.sum b { font-family: var(--font-display); font-size: 1.8rem; color: var(--ink); }
+.sum.big b { color: var(--red); font-size: 2.4rem; }
+.plan .note { color: #7a7266; }
+.credits { padding: 40px 0 10px; }
+.credits ul { list-style: none; display: grid; gap: 6px; font-size: .82rem; color: var(--muted); margin-top: 10px; }
+.credits a { text-decoration: underline; }

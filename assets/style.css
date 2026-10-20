@@ -241,3 +241,15 @@ body.t-us { --accent: #e8bd62; --bg: #1a0d10; }
 .tile:hover .more, .tile:focus-visible .more { max-height: 140px; opacity: 1; }
 .tile .more b { display: block; margin-top: 10px; color: var(--gold-2); }
 @media (max-width: 760px) { .tiles { flex-direction: column; height: auto; } .tile { min-height: 190px; } .tile .more { max-height: 140px; opacity: 1; } }
+
+/* real-photo tiles & strips */
+.tile { background: linear-gradient(to top, rgba(10,8,14,.88) 5%, rgba(10,8,14,.15) 60%), var(--img, none), linear-gradient(170deg, var(--c1), var(--c2)); background-size: cover; background-position: center; }
+.tile .e { display: none; }
+.photos { display: grid; grid-template-columns: repeat(4, 1fr); height: 300px; }
+.photos figure { position: relative; background: var(--img) center/cover; overflow: hidden; transition: flex .5s; }
+.photos figure::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,.65), transparent 55%); }
+.photos figure:hover { filter: saturate(1.2); }
+.photos figcaption { position: absolute; left: 18px; bottom: 14px; z-index: 1; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; font-size: .85rem; }
+@media (max-width: 760px) { .photos { grid-template-columns: 1fr 1fr; height: 360px; } }
+.teaser { background: linear-gradient(120deg, #2b2631, #14513f); text-align: left; }
+.teaser .wrap { max-width: 900px; }
