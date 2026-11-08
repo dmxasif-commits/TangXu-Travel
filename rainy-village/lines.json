@@ -1,0 +1,38 @@
+[
+ {
+  "id": "l1",
+  "text": "It starts with one drop.",
+  "voice": "bf_emma",
+  "speed": 0.88
+ },
+ {
+  "id": "l2",
+  "text": "High in the mountains, the cloud lets go.",
+  "voice": "bf_emma",
+  "speed": 0.88
+ },
+ {
+  "id": "l3",
+  "text": "Roofs drink first. Then the stones. Then the stream.",
+  "voice": "bf_emma",
+  "speed": 0.88
+ },
+ {
+  "id": "l4",
+  "text": "Somewhere below, one red umbrella is walking home.",
+  "voice": "bf_emma",
+  "speed": 0.88
+ },
+ {
+  "id": "l5",
+  "text": "One lit window is enough.",
+  "voice": "bf_emma",
+  "speed": 0.88
+ },
+ {
+  "id": "l6",
+  "text": "Rain, again. Stay a little longer.",
+  "voice": "bf_emma",
+  "speed": 0.88
+ }
+]

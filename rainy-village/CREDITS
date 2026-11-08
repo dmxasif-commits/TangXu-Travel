@@ -1,0 +1,11 @@
+Rainy Village (watercolor, 30 s) - third-party assets
+
+Picture: drawn in code (canvas 2D); no external images.
+Fonts (SIL Open Font License 1.1, self-hosted in fonts/):
+  - Cormorant Garamond Italic - Christian Thalmann / Catharsis Fonts - https://github.com/google/fonts/tree/main/ofl/cormorantgaramond
+  - Caveat - Impallari Type - https://github.com/google/fonts/tree/main/ofl/caveat
+Voice: Kokoro-82M (Apache-2.0) via kokoro-onnx, voice "bf_emma" - https://github.com/thewh1teagle/kokoro-onnx
+Music: original score synthesized with the library's physical-modelling plucked strings (kalimba, nylon guitar, music box), pads from sine synthesis. No samples used.
+Sound effects: procedural (numpy/scipy), library core/audio/sfx.py.
+Speech check: faster-whisper (MIT).
+Tools: Lemo-Opuscar rendering tools (MIT).
