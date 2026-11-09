@@ -13,3 +13,7 @@ Open `index.html` in a browser, or run `npx serve .`.
 - Set the real WhatsApp number in `malaysia.html` (`data-wa`) and inbox in `usa.html` / `index.html` (`data-mail`).
 - Swap SVG illustrations for real photos (Terracotta Army, Great Mosque, Muslim Quarter).
 - Add Bahasa Malaysia copy for the Malaysia page.
+
+## Babyglee redesign concept (`babyglee/`)
+Playful 3D kids'-sneaker storefront (teal `#24babc` theme). Open `babyglee/index.html`.
+Original SVG illustrations — swap in real product photos before launch.
