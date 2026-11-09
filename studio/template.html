@@ -1,0 +1,389 @@
+<title>ফিল্ম স্টুডিও</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Noto+Serif+Bengali:wght@600;700&display=swap">
+<style>
+/* Layout: a working desk. Player and film shelf on top, then three real steps (style, story, send), then the queue. */
+:root {
+  --bg: #f2f5f8; --surface: #ffffff; --surface2: #e8eef4; --ink: #16212c; --muted: #566676; --line: #d3dce5;
+  --accent: #2c5d93; --accent-ink: #ffffff; --hot: #c43f26; --hot-ink: #ffffff;
+  --ok: #1f7a4d; --warn: #8a5a00; --warn-bg: #fbefd2; --ok-bg: #dcf1e5; --info-bg: #dde9f6; --bad: #b3261e; --bad-bg: #f9dedb;
+  --f-body: "Hind Siliguri", system-ui, sans-serif; --f-head: "Noto Serif Bengali", "Hind Siliguri", serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0f151c; --surface: #17202a; --surface2: #1f2a36; --ink: #e8eef4; --muted: #9aa9b8; --line: #2a3745;
+  --accent: #7db0e8; --accent-ink: #0b1620; --hot: #ea6a4f; --hot-ink: #1a0905;
+  --ok: #6fd1a0; --warn: #f0c36a; --warn-bg: #3a2f12; --ok-bg: #12301f; --info-bg: #172b40; --bad: #f2928b; --bad-bg: #3a1a17; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0f151c; --surface: #17202a; --surface2: #1f2a36; --ink: #e8eef4; --muted: #9aa9b8; --line: #2a3745;
+  --accent: #7db0e8; --accent-ink: #0b1620; --hot: #ea6a4f; --hot-ink: #1a0905;
+  --ok: #6fd1a0; --warn: #f0c36a; --warn-bg: #3a2f12; --ok-bg: #12301f; --info-bg: #172b40; --bad: #f2928b; --bad-bg: #3a1a17; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font: 16px/1.6 var(--f-body); padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 56px; }
+.wrap { max-width: 1180px; margin: 0 auto; display: grid; gap: 28px; }
+h1, h2, h3 { font-family: var(--f-head); margin: 0; text-wrap: balance; line-height: 1.3; }
+h1 { font-size: clamp(26px, 4vw, 36px); } h2 { font-size: 22px; } h3 { font-size: 17px; font-family: var(--f-body); font-weight: 600; }
+p { margin: 0; } .muted { color: var(--muted); } .small { font-size: 14px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+header { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 12px; }
+header p { max-width: 56ch; }
+.btn { border: 1px solid var(--line); background: var(--surface); border-radius: 8px; padding: 9px 16px; font-weight: 600; min-height: 42px; }
+.btn:hover { border-color: var(--accent); }
+.btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.btn.hot { background: var(--hot); color: var(--hot-ink); border-color: var(--hot); padding-inline: 22px; }
+.btn[disabled] { opacity: .5; cursor: not-allowed; }
+.btn.small { min-height: 34px; padding: 4px 12px; font-size: 14px; }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 20px; min-width: 0; }
+.stage { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: 20px; }
+.player { background: #0b1118; border-radius: 10px; overflow: hidden; aspect-ratio: 16/9; display: grid; place-items: center; max-width: 100%; }
+.player video { width: 100%; height: 100%; display: block; background: #0b1118; }
+.player .empty { color: #b9c6d3; text-align: center; padding: 24px; }
+.now { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; margin-top: 12px; }
+.shelf { display: grid; gap: 10px; align-content: start; max-height: 420px; overflow-y: auto; }
+.film { display: grid; grid-template-columns: 96px 1fr; gap: 12px; text-align: left; width: 100%; padding: 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+.film[aria-current="true"] { border-color: var(--accent); background: var(--info-bg); }
+.film img, .film .ph { width: 96px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; background: var(--surface2); }
+.film b { display: block; line-height: 1.3; }
+.stepbar { display: flex; align-items: baseline; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.stepno { font-family: var(--f-head); font-size: 15px; color: var(--accent-ink); background: var(--accent); border-radius: 999px; width: 30px; height: 30px; display: inline-grid; place-items: center; flex: none; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 4px 14px; font-size: 14px; min-height: 34px; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.search { width: 100%; max-width: 340px; border: 1px solid var(--line); border-radius: 8px; padding: 8px 12px; background: var(--bg); margin-bottom: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+.card { text-align: left; border: 2px solid var(--line); border-radius: 12px; background: var(--surface); padding: 0; overflow: hidden; display: grid; align-content: start; min-width: 0; }
+.card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; background: var(--surface2); }
+.card .t { padding: 10px 12px 12px; display: grid; gap: 4px; }
+.card .t b { line-height: 1.3; } .card .t span { font-size: 13px; color: var(--muted); }
+.card[aria-pressed="true"] { border-color: var(--hot); box-shadow: 0 0 0 3px color-mix(in srgb, var(--hot) 25%, transparent); }
+.card[aria-pressed="true"] .t b::after { content: " ✓"; color: var(--hot); }
+.form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.form .full { grid-column: 1 / -1; }
+label { display: grid; gap: 6px; font-weight: 600; font-size: 15px; }
+label small { font-weight: 400; color: var(--muted); font-size: 13px; }
+input[type=text], select, textarea { width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--bg); min-height: 42px; }
+textarea { min-height: 150px; resize: vertical; line-height: 1.6; }
+.seg { display: flex; flex-wrap: wrap; gap: 8px; }
+.seg label { display: inline-flex; font-weight: 500; }
+.seg input { position: absolute; opacity: 0; pointer-events: none; }
+.seg span { border: 1px solid var(--line); border-radius: 8px; padding: 8px 14px; background: var(--bg); min-height: 40px; display: inline-flex; align-items: center; cursor: pointer; }
+.seg input:checked + span { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.seg input:focus-visible + span { outline: 3px solid var(--accent); outline-offset: 2px; }
+.summary { display: flex; flex-wrap: wrap; gap: 8px 20px; align-items: center; justify-content: space-between; }
+.pill { display: inline-block; border-radius: 999px; padding: 2px 12px; font-size: 13px; font-weight: 600; }
+.s-queued { background: var(--warn-bg); color: var(--warn); } .s-making { background: var(--info-bg); color: var(--accent); }
+.s-review { background: var(--info-bg); color: var(--accent); } .s-done { background: var(--ok-bg); color: var(--ok); } .s-failed { background: var(--bad-bg); color: var(--bad); }
+.queue { display: grid; gap: 10px; }
+.req { display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: center; padding: 14px; border: 1px solid var(--line); border-radius: 10px; }
+.req .meta { display: flex; flex-wrap: wrap; gap: 4px 12px; font-size: 14px; color: var(--muted); margin-top: 4px; }
+.req .acts { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.how { display: grid; gap: 10px; }
+.how ol { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.cmd { background: var(--surface2); border-radius: 8px; padding: 10px 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; }
+.cmd code { font-family: var(--f-body); font-weight: 500; overflow-wrap: anywhere; }
+.note { background: var(--warn-bg); color: var(--warn); border-radius: 8px; padding: 10px 14px; font-size: 14px; }
+.toast { position: fixed; left: 50%; transform: translateX(-50%); bottom: max(18px, env(safe-area-inset-bottom, 0px)); background: var(--ink); color: var(--bg); padding: 10px 18px; border-radius: 999px; font-size: 15px; z-index: 20; max-width: calc(100% - 32px); }
+.empty-note { padding: 18px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: 10px; }
+.ideas { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 12px; margin-top: 14px; }
+.idea { text-align: left; border: 2px solid var(--line); border-radius: 12px; background: var(--surface); padding: 14px; display: grid; gap: 6px; align-content: start; min-width: 0; }
+.idea[aria-pressed="true"] { border-color: var(--hot); box-shadow: 0 0 0 3px color-mix(in srgb, var(--hot) 25%, transparent); }
+.idea b { line-height: 1.35; } .idea .fit { font-size: 13px; color: var(--accent); font-weight: 600; }
+.scene { border: 1px solid var(--line); border-radius: 10px; padding: 14px; display: grid; gap: 8px; background: var(--bg); min-width: 0; }
+.scene header { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+.scene .vis { font-size: 14px; color: var(--muted); }
+.scenes { display: grid; gap: 12px; margin-top: 12px; }
+.scene textarea { min-height: 90px; }
+.tot { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; margin-top: 12px; }
+.revise { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; align-items: center; }
+.revise input { flex: 1 1 260px; min-width: 0; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; background: var(--bg); min-height: 42px; }
+.facts { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 4px; }
+@media (max-width: 860px) { .stage { grid-template-columns: minmax(0, 1fr); } .shelf { max-height: none; } }
+@media (max-width: 560px) { .form { grid-template-columns: minmax(0, 1fr); } .req { grid-template-columns: minmax(0, 1fr); } .panel { padding: 16px; } }
+@media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <h1>ফিল্ম স্টুডিও</h1>
+      <p class="muted">স্টাইল বাছুন, গল্প লিখুন, জমা দিন। ফিল্ম তৈরি হলে এখানেই দেখতে পাবেন। কোনো কোডিং লাগবে না।</p>
+    </div>
+    <div id="dbstate" class="small muted" aria-live="polite"></div>
+  </header>
+
+  <section class="panel" aria-labelledby="h-play">
+    <div class="stage">
+      <div>
+        <h2 id="h-play" style="margin-bottom:12px">আপনার ফিল্ম</h2>
+        <div class="player" id="player"><div class="empty">এখনো কোনো ফিল্ম নেই। নিচে স্টাইল বেছে প্রথম গল্পটা জমা দিন।</div></div>
+        <div class="now" id="now"></div>
+      </div>
+      <div>
+        <h3 style="margin-bottom:10px">সব ফিল্ম</h3>
+        <div class="shelf" id="shelf"><div class="empty-note">তৈরি হওয়া ফিল্ম এখানে সারি দিয়ে আসবে।</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-s1">
+    <div class="stepbar"><span class="stepno">১</span><h2 id="h-s1">বিষয় খুঁজুন</h2><span class="muted small" id="topic-note">Claude আইডিয়া দেবে, আপনি বাছবেন</span></div>
+    <div class="form">
+      <label class="full" for="f-interest">কোন ক্ষেত্রে আগ্রহ?
+        <small>যেমন: ব্রিজ, বিদ্যুৎ, মহাকাশ, ইতিহাস। ফাঁকা রাখলে Claude নিজে ভালো বিষয় খুঁজবে।</small>
+        <input id="f-interest" type="text" autocomplete="off">
+      </label>
+      <div><label id="l-aud">দর্শক কারা?</label><div class="seg" role="radiogroup" aria-labelledby="l-aud" id="seg-aud"></div></div>
+      <div style="align-self:end;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+        <button class="btn primary" id="research" type="button">Claude আইডিয়া খুঁজুক</button>
+        <span class="small muted" id="research-state" aria-live="polite"></span>
+      </div>
+    </div>
+    <div class="ideas" id="ideas"></div>
+    <p class="small muted" style="margin-top:12px">আইডিয়াগুলো Claude-এর জানা তথ্য থেকে আসে, ইন্টারনেট ঘেঁটে নয়। ফিল্ম বানানোর সময় Claude আসল তথ্য আর সূত্র মিলিয়ে নেবে।</p>
+    <label class="full" for="f-topic" style="margin-top:14px">বাছা বিষয় (অথবা নিজের বিষয় লিখুন)
+      <input id="f-topic" type="text" placeholder="যেমন: কেন নদীর ওপর সেতু বানাতে জাহাজের উচ্চতাই শেষ কথা বলে" autocomplete="off">
+    </label>
+  </section>
+
+  <section class="panel" aria-labelledby="h-s2">
+    <div class="stepbar"><span class="stepno">২</span><h2 id="h-s2">স্টাইল বাছুন</h2><span class="muted small" id="pick-note">৬৬টা স্টাইলের একটা ক্লিক করুন</span></div>
+    <div class="chips" id="chips" role="group" aria-label="ক্যাটাগরি"></div>
+    <input class="search" id="q" type="text" placeholder="নাম দিয়ে খুঁজুন, যেমন Engineering" aria-label="স্টাইল খুঁজুন">
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-s3">
+    <div class="stepbar"><span class="stepno">৩</span><h2 id="h-s3">ফিল্মের মাপ ও ভয়েস</h2></div>
+    <div class="form">
+      <div class="full"><label id="l-min">কত মিনিটের ফিল্ম?</label>
+        <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+          <div class="seg" role="radiogroup" aria-labelledby="l-min" id="seg-min"></div>
+          <label for="f-min" style="display:inline-flex;grid-auto-flow:column;align-items:center;gap:8px;font-weight:500">অন্য মাপ
+            <input id="f-min" type="number" min="0.5" max="10" step="0.5" style="width:90px;border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--bg);min-height:42px"> মিনিট</label>
+        </div>
+        <div class="note" id="len-note" style="margin-top:10px" hidden></div>
+      </div>
+      <div><label id="l-lang">ভয়েসওভার ও সাবটাইটেলের ভাষা</label><div class="seg" role="radiogroup" aria-labelledby="l-lang" id="seg-lang"></div></div>
+      <div><label id="l-voice">ভয়েস</label><div class="seg" role="radiogroup" aria-labelledby="l-voice" id="seg-voice"></div></div>
+      <div><label id="l-tone">কথার ধরন</label><div class="seg" role="radiogroup" aria-labelledby="l-tone" id="seg-tone"></div></div>
+      <div><label id="l-sb">আগে স্টোরিবোর্ড দেখতে চান?</label><div class="seg" role="radiogroup" aria-labelledby="l-sb" id="seg-sb"></div></div>
+      <label class="full" for="f-notes">আর কিছু বলার থাকলে
+        <small>রং, মুড, নিজের ছবি বা মিউজিক ব্যবহার করতে চাইলে সেটা এখানে লিখুন।</small>
+        <input id="f-notes" type="text" autocomplete="off">
+      </label>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-s4">
+    <div class="stepbar"><span class="stepno">৪</span><h2 id="h-s4">গল্প (Claude লিখবে)</h2></div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+      <button class="btn primary" id="write" type="button">Claude গল্প লিখুক</button>
+      <span class="small muted" id="write-state" aria-live="polite">বিষয়, স্টাইল আর মিনিট ঠিক করে চাপুন। দৃশ্য ধরে ধরে ভয়েসের কথাসহ লিখে দেবে।</span>
+    </div>
+    <div id="story" style="margin-top:16px"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-s5">
+    <div class="stepbar"><span class="stepno">৫</span><h2 id="h-s5">জমা দিন</h2></div>
+    <div class="summary">
+      <div id="sum" class="muted">স্টাইল আর বিষয় ঠিক করলে এখানে সারসংক্ষেপ আসবে।</div>
+      <button class="btn hot" id="send" type="button">ফিল্মের জন্য জমা দিন</button>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-q">
+    <h2 id="h-q" style="margin-bottom:14px">জমা দেওয়া কাজ</h2>
+    <div class="queue" id="queue"><div class="empty-note">জমা দেওয়া গল্প এখানে দেখা যাবে, সঙ্গে অবস্থা: অপেক্ষায়, বানানো হচ্ছে বা তৈরি।</div></div>
+  </section>
+
+  <section class="panel how" aria-labelledby="h-how">
+    <h2 id="h-how">ফিল্ম আসলে কীভাবে তৈরি হয়</h2>
+    <p>এই পেজ নিজে ভিডিও বানায় না। জমা দিলে আপনার অনুরোধ এখানে সেভ থাকে। ভিডিও বানায় Claude, আপনার Claude সেশনে।</p>
+    <ol>
+      <li>উপরে স্টাইল বেছে গল্প লিখে "জমা দিন" চাপুন।</li>
+      <li>Claude সেশনে নিচের বাক্যটা লিখে পাঠান।</li>
+      <li>Claude অনুরোধ পড়ে ফিল্ম বানাবে, এখানে ফিল্মটা তুলে দেবে, অবস্থা "তৈরি" হয়ে যাবে।</li>
+    </ol>
+    <div class="cmd"><code id="cmdtext">এই স্টুডিও পেজে জমা পড়া অপেক্ষার সব অনুরোধ দেখো, প্রথমটা দিয়ে ফিল্ম বানাও, তারপর ফিল্মটা এই পেজে তুলে দাও।</code><button class="btn small" id="copy" type="button">কপি করুন</button></div>
+    <p class="small muted">একটা ফিল্ম বানাতে সাধারণত ৩০ থেকে ৬০ মিনিট সময় আর বেশ কিছু টোকেন লাগে।</p>
+  </section>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+const STYLES = /*__STYLES__*/[];
+const MINS = [['1', '১ মিনিট'], ['2', '২ মিনিট'], ['3', '৩ মিনিট'], ['5', '৫ মিনিট']];
+const LANGS = [['bn', 'বাংলা'], ['en', 'English']];
+const VOICES = [['female', 'নারী কণ্ঠ'], ['male', 'পুরুষ কণ্ঠ'], ['none', 'ভয়েস ছাড়া']];
+const TONES = [['simple', 'সহজ, বন্ধুর মতো'], ['serious', 'গম্ভীর, তথ্যভরা'], ['dramatic', 'নাটকীয়']];
+const TONE_TXT = { simple: 'সহজ ও বন্ধুত্বপূর্ণ', serious: 'গম্ভীর ও তথ্যভরা', dramatic: 'নাটকীয় ও আবেগী' };
+const AUDS = [['general', 'সাধারণ মানুষ'], ['students', 'শিক্ষার্থী'], ['tech', 'ইঞ্জিনিয়ার ও টেক'], ['yt', 'ইউটিউব দর্শক']];
+const AUD_TXT = { general: 'সাধারণ মানুষ', students: 'শিক্ষার্থী', tech: 'ইঞ্জিনিয়ার ও টেক আগ্রহী', yt: 'ইউটিউব দর্শক' };
+const SBS = [['no', 'না, সরাসরি ফিল্ম'], ['yes', 'হ্যাঁ, আগে দেখাও']];
+const STATUS = { queued: 'অপেক্ষায়', making: 'বানানো হচ্ছে', review: 'আপনার দেখার জন্য', done: 'তৈরি', failed: 'সমস্যা হয়েছে' };
+const WPM = 115; // Bangla narration words per minute, a safe estimate for a calm read
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const S = { style: null, cat: 'all', q: '', min: '5', lang: 'bn', voice: 'female', tone: 'simple', aud: 'general', sb: 'no', ideas: [], idea: null, story: null, films: [], reqs: [], current: null };
+let db = null, sample = null;
+
+function toast(m) { const t = $('toast'); t.textContent = m; t.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => t.hidden = true, 3600); }
+const FIELDS = ['f-interest', 'f-topic', 'f-notes'];
+function save() { try { const o = { style: S.style, min: S.min, lang: S.lang, voice: S.voice, tone: S.tone, aud: S.aud, sb: S.sb, ideas: S.ideas, idea: S.idea, story: S.story }; for (const f of FIELDS) o[f] = $(f).value; localStorage.setItem('studio-draft-2', JSON.stringify(o)); } catch (e) {} }
+function load() { try { const d = JSON.parse(localStorage.getItem('studio-draft-2') || 'null'); if (!d) return; for (const k of ['style', 'min', 'lang', 'voice', 'tone', 'aud', 'sb', 'ideas', 'idea', 'story']) if (d[k] != null) S[k] = d[k]; for (const f of FIELDS) $(f).value = d[f] || ''; } catch (e) {} }
+const minutes = () => Math.max(.5, Math.min(10, parseFloat(S.min) || 5));
+const styleOf = slug => STYLES.find(s => s.slug === slug);
+
+function seg(id, name, opts, after) {
+  $(id).innerHTML = opts.map(([v, l]) => `<label><input type="radio" name="${name}" value="${v}" ${S[name] === v ? 'checked' : ''}><span>${l}</span></label>`).join('');
+  $(id).addEventListener('change', e => { S[name] = e.target.value; if (after) after(); save(); renderSum(); });
+}
+function syncMin() { $('f-min').value = S.min; for (const r of document.querySelectorAll('#seg-min input')) r.checked = r.value === S.min; lenNote(); }
+function lenNote() {
+  const m = minutes(), n = $('len-note');
+  if (m > 3) { n.hidden = false; n.textContent = `${m} মিনিটের ফিল্ম বেশ বড়। বানাতে আনুমানিক ${Math.round(m * 1.2)} থেকে ${Math.round(m * 2)} ঘণ্টা আর অনেক টোকেন লাগতে পারে। প্রথমে ১ বা ২ মিনিটে দেখে নিলে ঝুঁকি কম।`; }
+  else n.hidden = true;
+}
+function renderChips() {
+  const cats = [['all', 'সব']].concat([...new Map(STYLES.map(s => [s.cat, s.bn])).entries()]);
+  $('chips').innerHTML = cats.map(([k, l]) => `<button class="chip" type="button" data-c="${esc(k)}" aria-pressed="${S.cat === k}">${esc(l)}</button>`).join('');
+}
+function renderGrid() {
+  const q = S.q.trim().toLowerCase();
+  const list = STYLES.filter(s => (S.cat === 'all' || s.cat === S.cat) && (!q || (s.en + ' ' + s.film + ' ' + (s.uses || []).join(' ')).toLowerCase().includes(q)));
+  $('grid').innerHTML = list.length ? list.map(s => `<button class="card" type="button" data-s="${s.slug}" aria-pressed="${S.style === s.slug}"><img src="${s.img}" alt="${esc(s.en)} স্টাইলের একটা ফ্রেম" loading="lazy"><span class="t"><b>${esc(s.en)}</b><span>${esc(s.bn)}</span><span>${esc(s.line)}</span></span></button>`).join('') : '<div class="empty-note">এই নামে কোনো স্টাইল পাওয়া যায়নি।</div>';
+}
+function renderIdeas() {
+  $('ideas').innerHTML = S.ideas.map((d, i) => { const st = styleOf(d.bestStyle); return `<button class="idea" type="button" data-i="${i}" aria-pressed="${S.idea === i}"><b>${esc(d.title)}</b><span class="small">${esc(d.hook)}</span><span class="small muted">${esc(d.why)}</span>${st ? `<span class="fit">ভালো মানায়: ${esc(st.en)}</span>` : ''}</button>`; }).join('');
+}
+function renderSum() {
+  const st = styleOf(S.style), lang = LANGS.find(l => l[0] === S.lang)[1], v = VOICES.find(l => l[0] === S.voice)[1];
+  $('pick-note').textContent = st ? `বাছা হয়েছে: ${st.en}` : '৬৬টা স্টাইলের একটা ক্লিক করুন';
+  const topic = $('f-topic').value.trim();
+  $('sum').innerHTML = st || topic ? `<b>${esc(st ? st.en : 'স্টাইল বাছা হয়নি')}</b> · ${minutes()} মিনিট · ${lang} · ${v}<br><span class="small muted">${esc(topic || 'বিষয় এখনো ঠিক হয়নি')}${S.story ? ' · গল্প তৈরি আছে' : ' · গল্প এখনো লেখা হয়নি'}</span>` : 'স্টাইল আর বিষয় ঠিক করলে এখানে সারসংক্ষেপ আসবে।';
+}
+
+/* ---- Claude helpers (sample capability) ---- */
+const styleList = () => STYLES.map(s => `${s.slug} = ${s.en} (${(s.uses || []).join(', ')})`).join('\n');
+async function research() {
+  if (!sample) { toast('এই ভিউতে Claude-এর সুবিধা চালু নেই'); return; }
+  const interest = $('f-interest').value.trim(), st = styleOf(S.style);
+  $('research').disabled = true; $('research-state').textContent = 'খোঁজা হচ্ছে...';
+  const prompt = `তুমি একজন ডকুমেন্টারি ফিল্মের রিসার্চার। দর্শক: ${AUD_TXT[S.aud]}. আগ্রহের ক্ষেত্র: ${interest || 'যেকোনো, যেটা সবচেয়ে মজার ও দৃশ্যমান'}. ${st ? 'ভিজ্যুয়াল স্টাইল ঠিক করা আছে: ' + st.en + ' (' + st.line + '). বিষয়গুলো এই স্টাইলে ভালো মানাতে হবে।' : 'স্টাইল এখনো ঠিক হয়নি, প্রতিটা বিষয়ের জন্য নিচের তালিকা থেকে সবচেয়ে মানানসই একটা স্টাইল বাছো।'}\n৮টা আলাদা ফিল্মের বিষয় দাও। যেগুলোর একটা পরিষ্কার প্রশ্ন বা মোড় আছে, চোখে দেখানো যায়, আর সত্য তথ্য দিয়ে বলা সম্ভব। কোনো সংখ্যা বা তথ্য বানিয়ে লিখো না।\nস্টাইলের তালিকা (slug = নাম (কোন ধরনের কাজে ভালো)):\n${styleList()}\nশুধু JSON অ্যারে ফেরত দাও, প্রতিটা এলিমেন্ট: {"title": "বাংলায় বিষয়ের নাম", "hook": "প্রথম ৩ সেকেন্ডে দর্শককে কী আটকে রাখবে, এক লাইনে", "why": "কেন এটা ভালো ফিল্ম, এক লাইনে", "bestStyle": "তালিকার একটা slug"}`;
+  try {
+    const arr = await sample.json(prompt, { cache: false });
+    S.ideas = (Array.isArray(arr) ? arr : arr.ideas || []).slice(0, 8); S.idea = null; renderIdeas(); save();
+    $('research-state').textContent = `${S.ideas.length}টা আইডিয়া পেলাম। একটা ক্লিক করুন।`;
+  } catch (e) { $('research-state').textContent = e && e.code === 'not_granted' ? 'অনুমতি দেওয়া হয়নি।' : 'আইডিয়া আনা যায়নি, আবার চেষ্টা করুন।'; }
+  $('research').disabled = false;
+}
+async function writeStory(instruction) {
+  if (!sample) { toast('এই ভিউতে Claude-এর সুবিধা চালু নেই'); return; }
+  const topic = $('f-topic').value.trim(); if (!topic) { toast('আগে ১ নম্বর ধাপে বিষয় বাছুন বা লিখুন'); return; }
+  const st = styleOf(S.style), m = minutes(), words = Math.round(m * WPM * .92), bn = S.lang === 'bn';
+  $('write').disabled = true; $('write-state').textContent = m > 2 ? 'লেখা হচ্ছে, বড় ফিল্মে এক-দুই মিনিট লাগতে পারে...' : 'লেখা হচ্ছে...';
+  const prev = instruction && S.story ? `\nআগের খসড়া (এটা শুধু ঠিক করো, গোড়া থেকে নয়):\n${JSON.stringify(S.story)}\nবদলের নির্দেশ: ${instruction}` : '';
+  const prompt = `তুমি একজন ডকুমেন্টারি ফিল্মের গল্পকার ও পরিচালক। ${m} মিনিটের একটা ফিল্মের গল্প আর ভয়েসওভার লেখো।\nবিষয়: ${topic}\nভিজ্যুয়াল স্টাইল: ${st ? st.en + ' (' + st.line + ')' : 'ঠিক হয়নি'}\nদর্শক: ${AUD_TXT[S.aud]}। কথার ধরন: ${TONE_TXT[S.tone]}।\nভয়েসওভারের ভাষা: ${bn ? 'বাংলা (সহজ, কথ্য-ঘেঁষা, উচ্চারণ করে পড়ার মতো; সংখ্যা কথায় লিখো না, অঙ্কেই লিখো)' : 'English'}।\nমোট ভয়েসওভার প্রায় ${words} শব্দ হবে। দৃশ্যের seconds-এর যোগফল প্রায় ${Math.round(m * 60)} হবে। ${Math.max(5, Math.round(m * 2.2))}টার মতো দৃশ্য।\nনিয়ম: একটা মূল প্রশ্ন বা চাওয়া, একটা মোড়, একটা প্রতিধ্বনিত শেষ। প্রথম ৩ সেকেন্ডে চোখ আটকানো কিছু। কোনো সংখ্যা, নাম বা তারিখ বানিয়ে লিখো না; যে তথ্য নিশ্চিত নও সেটা "facts" তালিকায় দাও যাচাইয়ের জন্য। প্রতিটা দৃশ্যের "visual"-এ লেখো ওই স্টাইলে পর্দায় কী দেখা যাবে।${prev}\nশুধু JSON ফেরত দাও: {"logline": "এক লাইনে ফিল্মের সারকথা", "scenes": [{"title": "দৃশ্যের নাম", "visual": "পর্দায় কী দেখা যাবে", "narration": "ভয়েসওভারের কথা", "seconds": 20}], "facts": ["যাচাই করতে হবে এমন তথ্য বা দাবি"]}`;
+  try {
+    const r = await sample.json(prompt, { cache: false, modelTier: 'complex' });
+    if (!r || !Array.isArray(r.scenes) || !r.scenes.length) throw new Error('bad');
+    S.story = { logline: String(r.logline || ''), scenes: r.scenes.map(x => ({ title: String(x.title || ''), visual: String(x.visual || ''), narration: String(x.narration || ''), seconds: Number(x.seconds) || 0 })), facts: (r.facts || []).map(String) };
+    renderStory(); save(); renderSum(); $('write-state').textContent = 'গল্প তৈরি। কথাগুলো নিজে বদলাতে পারবেন।';
+  } catch (e) { $('write-state').textContent = e && e.code === 'not_granted' ? 'অনুমতি দেওয়া হয়নি।' : 'গল্প লেখা যায়নি, আবার চেষ্টা করুন।'; }
+  $('write').disabled = false;
+}
+const countWords = t => (t.trim().match(/\S+/g) || []).length;
+function renderStory() {
+  const st = S.story; if (!st) { $('story').innerHTML = ''; return; }
+  $('story').innerHTML = `<p><b>${esc(st.logline)}</b></p>
+    <div class="scenes">${st.scenes.map((s, i) => `<div class="scene"><header><b>দৃশ্য ${i + 1}: ${esc(s.title)}</b><span class="small muted">${s.seconds || '?'} সেকেন্ড</span></header><div class="vis">পর্দায়: ${esc(s.visual)}</div><textarea data-i="${i}" aria-label="দৃশ্য ${i + 1}-এর ভয়েসওভার">${esc(s.narration)}</textarea></div>`).join('')}</div>
+    <div class="tot" id="tot"></div>
+    ${st.facts.length ? `<h3 style="margin-top:14px">ফিল্ম বানানোর আগে যাচাই হবে</h3><ul class="facts small">${st.facts.map(f => `<li>${esc(f)}</li>`).join('')}</ul>` : ''}
+    <div class="revise"><input id="rev" type="text" placeholder="বদলের নির্দেশ, যেমন: শুরুটা আরও আকর্ষণীয় করো" aria-label="বদলের নির্দেশ"><button class="btn" id="revbtn" type="button">এভাবে বদলে লেখো</button></div>`;
+  renderTot();
+}
+function renderTot() {
+  const st = S.story, el = $('tot'); if (!st || !el) return;
+  const m = minutes(), tw = st.scenes.reduce((a, s) => a + countWords(s.narration), 0), est = tw / WPM, ts = st.scenes.reduce((a, s) => a + (s.seconds || 0), 0), ok = Math.abs(est - m) <= Math.max(.5, m * .2);
+  el.innerHTML = `<span>মোট ${tw} শব্দ, পড়তে প্রায় ${est.toFixed(1)} মিনিট</span><span class="pill ${ok ? 's-done' : 's-queued'}">${ok ? `লক্ষ্য ${m} মিনিটের কাছাকাছি` : `লক্ষ্য ${m} মিনিট, তাই কথা বাড়ানো বা কমানো দরকার`}</span><span class="small muted">দৃশ্যের সময়ের যোগফল ${ts} সেকেন্ড</span>`;
+}
+
+/* ---- films and queue ---- */
+function playFilm(f) {
+  S.current = f.id;
+  $('player').innerHTML = `<video controls playsinline preload="metadata" ${f.poster ? `poster="${esc(f.poster)}"` : ''} src="${esc(f.url)}"></video>`;
+  $('now').innerHTML = `<div><b>${esc(f.title)}</b><div class="small muted">${esc(f.styleName || '')}${f.durationSec ? ' · ' + f.durationSec + ' সেকেন্ড' : ''}</div></div>`;
+  renderShelf();
+}
+function renderShelf() {
+  if (!S.films.length) { $('shelf').innerHTML = '<div class="empty-note">তৈরি হওয়া ফিল্ম এখানে সারি দিয়ে আসবে।</div>'; return; }
+  $('shelf').innerHTML = S.films.map(f => `<button class="film" type="button" data-f="${esc(f.id)}" aria-current="${S.current === f.id}">${f.poster ? `<img src="${esc(f.poster)}" alt="">` : '<span class="ph"></span>'}<span><b>${esc(f.title)}</b><span class="small muted">${esc(f.styleName || '')}</span></span></button>`).join('');
+}
+function renderQueue() {
+  if (!S.reqs.length) { $('queue').innerHTML = '<div class="empty-note">জমা দেওয়া গল্প এখানে দেখা যাবে, সঙ্গে অবস্থা: অপেক্ষায়, বানানো হচ্ছে বা তৈরি।</div>'; return; }
+  $('queue').innerHTML = S.reqs.map(r => {
+    const film = r.filmId && S.films.find(f => f.id === r.filmId), mins = r.lengthMin || (r.lengthSec ? r.lengthSec / 60 : '');
+    return `<div class="req"><div><b>${esc(r.title || 'নামহীন')}</b> <span class="pill s-${esc(r.status)}">${esc(STATUS[r.status] || r.status)}</span>
+      <div class="meta"><span>${esc(r.styleName)}</span><span>${esc(mins)} মিনিট</span><span>${r.language === 'bn' ? 'বাংলা' : 'English'}</span>${Array.isArray(r.scenes) && r.scenes.length ? `<span>${r.scenes.length}টা দৃশ্য লেখা আছে</span>` : '<span>গল্প Claude পরে লিখবে</span>'}</div>
+      ${r.statusNote ? `<div class="small" style="margin-top:6px">${esc(r.statusNote)}</div>` : ''}</div>
+      <div class="acts">${film ? `<button class="btn small primary" data-play="${esc(film.id)}" type="button">দেখুন</button>` : ''}${r.status === 'queued' ? `<button class="btn small" data-del="${esc(r.id)}" type="button">মুছুন</button>` : ''}</div></div>`;
+  }).join('');
+}
+async function submit() {
+  const st = styleOf(S.style), topic = $('f-topic').value.trim();
+  if (!topic) { toast('আগে ১ নম্বর ধাপে বিষয় বাছুন বা লিখুন'); return; }
+  if (!st) { toast('২ নম্বর ধাপে একটা স্টাইল বাছুন'); return; }
+  if (!db) { toast('এই মুহূর্তে সেভ করা যাচ্ছে না। সাইন-ইন করা আছে কি না দেখুন'); return; }
+  $('send').disabled = true;
+  try {
+    const doc = { title: topic, topic, styleSlug: st.slug, styleName: st.en, lengthMin: minutes(), lengthSec: Math.round(minutes() * 60), language: S.lang, voice: S.voice, tone: S.tone, audience: S.aud, storyboard: S.sb === 'yes', notes: $('f-notes').value.trim(), status: 'queued', createdAt: new Date().toISOString() };
+    if (S.story) { doc.logline = S.story.logline; doc.scenes = S.story.scenes; doc.factsToVerify = S.story.facts; doc.story = S.story.scenes.map(s => s.narration).join('\n'); }
+    await db.collection('requests').add(doc);
+    toast('জমা হয়েছে। এবার Claude সেশনে বলুন ফিল্মটা বানাতে।');
+    $('queue').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  } catch (e) { toast('জমা হয়নি: ' + (e && e.message ? e.message : 'আবার চেষ্টা করুন')); }
+  $('send').disabled = false;
+}
+
+function bind() {
+  $('chips').addEventListener('click', e => { const b = e.target.closest('[data-c]'); if (!b) return; S.cat = b.dataset.c; renderChips(); renderGrid(); });
+  $('q').addEventListener('input', e => { S.q = e.target.value; renderGrid(); });
+  $('grid').addEventListener('click', e => { const b = e.target.closest('[data-s]'); if (!b) return; S.style = b.dataset.s; save(); renderGrid(); renderSum(); });
+  $('ideas').addEventListener('click', e => {
+    const b = e.target.closest('[data-i]'); if (!b) return; const d = S.ideas[+b.dataset.i]; if (!d) return;
+    S.idea = +b.dataset.i; $('f-topic').value = d.title; if (styleOf(d.bestStyle) && !S.style) { S.style = d.bestStyle; renderGrid(); toast('স্টাইলও বাছা হলো: ' + styleOf(d.bestStyle).en + '। ২ নম্বর ধাপে বদলাতে পারবেন।'); }
+    renderIdeas(); save(); renderSum();
+  });
+  $('shelf').addEventListener('click', e => { const b = e.target.closest('[data-f]'); if (!b) return; const f = S.films.find(x => x.id === b.dataset.f); if (f) { playFilm(f); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+  $('queue').addEventListener('click', async e => {
+    const p = e.target.closest('[data-play]'); if (p) { const f = S.films.find(x => x.id === p.dataset.play); if (f) { playFilm(f); window.scrollTo({ top: 0, behavior: 'smooth' }); } return; }
+    const d = e.target.closest('[data-del]'); if (d && db) { try { await db.collection('requests').doc(d.dataset.del).delete(); toast('মুছে ফেলা হয়েছে'); } catch (x) { toast('মোছা যায়নি'); } }
+  });
+  $('story').addEventListener('input', e => { const t = e.target.closest('textarea[data-i]'); if (!t) return; S.story.scenes[+t.dataset.i].narration = t.value; renderTot(); save(); });
+  $('story').addEventListener('click', e => { if (e.target.id === 'revbtn') { const v = $('rev').value.trim(); if (!v) { toast('কী বদলাতে চান লিখুন'); return; } writeStory(v); } });
+  for (const id of FIELDS) $(id).addEventListener('input', () => { save(); renderSum(); });
+  $('f-min').addEventListener('input', e => { S.min = e.target.value; for (const r of document.querySelectorAll('#seg-min input')) r.checked = r.value === S.min; lenNote(); save(); renderSum(); renderTot(); });
+  $('send').addEventListener('click', submit); $('write').addEventListener('click', () => writeStory('')); $('research').addEventListener('click', research);
+  $('copy').addEventListener('click', async () => { const t = $('cmdtext').textContent; try { await navigator.clipboard.writeText(t); toast('কপি হয়েছে'); } catch (e) { const r = document.createRange(); r.selectNodeContents($('cmdtext')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('লেখাটা বেছে নেওয়া হয়েছে, কপি করে নিন'); } });
+}
+
+async function connect() {
+  try { sample = await claude.use('sample'); } catch (e) { sample = null; }
+  try { db = await claude.use('db'); } catch (e) { db = null; }
+  if (!db) { $('dbstate').textContent = 'সেভ করার সুবিধা এখন বন্ধ'; return; }
+  $('dbstate').textContent = 'সেভ করা আছে';
+  const guard = setTimeout(() => { $('dbstate').textContent = 'লোড হতে দেরি হচ্ছে'; }, 10000);
+  db.collection('films').orderBy('createdAt', 'desc').onSnapshot(snap => {
+    clearTimeout(guard); S.films = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderShelf(); renderQueue();
+    const cur = S.films.find(f => f.id === S.current) || S.films[0];
+    if (cur && (!S.current || S.current !== cur.id)) playFilm(cur);
+  }, () => { $('dbstate').textContent = 'ফিল্ম লোড করা যায়নি'; });
+  db.collection('requests').orderBy('createdAt', 'desc').onSnapshot(snap => { S.reqs = snap.docs.map(d => ({ id: d.id, ...d.data() })); renderQueue(); }, () => {});
+}
+
+load(); renderChips(); renderGrid(); renderIdeas();
+seg('seg-min', 'min', MINS, syncMin); seg('seg-lang', 'lang', LANGS); seg('seg-voice', 'voice', VOICES); seg('seg-tone', 'tone', TONES); seg('seg-aud', 'aud', AUDS); seg('seg-sb', 'sb', SBS);
+syncMin(); bind(); renderStory(); renderSum(); connect();
+</script>

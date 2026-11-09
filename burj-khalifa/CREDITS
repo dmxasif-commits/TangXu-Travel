@@ -1,0 +1,6 @@
+Burj Khalifa, Engineering Diary part 1 (test cut) - third-party assets
+
+Picture: drawn in code (canvas 2D) with the Engineering Briefing Board renderer from the Lemo-Opuscar library (MIT). No photographs: every object is a marker sketch.
+Fonts (SIL Open Font License 1.1, self-hosted in kit/fonts/): Atma, Hind Siliguri, Archivo, IBM Plex Mono (Google Fonts, https://github.com/google/fonts).
+Voice: Microsoft Edge neural TTS, voice bn-BD-PradeepNeural (online service via the edge-tts package). The voice track is not covered by an open licence; check Microsoft's terms before publishing commercially.
+Music and sound effects: original, synthesized in code (plucked-string modelling and numpy synthesis); no samples.
