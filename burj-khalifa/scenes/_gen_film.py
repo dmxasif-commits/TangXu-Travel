@@ -63,15 +63,15 @@ ev(.5, 'ink', d=3.3, kind='line', v=.5)
 el(type='ink', kind='dim', id='dim828', **{'from': [TX + 345, GY], 'to': [TX + 345, TOP]}, ext=[[TX + 175, GY, TX + 365], [TX + 30, TOP, TX + 365]], extColor='grey',
    lw=12, color='blue', t=.7, d=3.0, ea=1.5, eb=2.0)
 ev(.7, 'dimzip', d=3.0, v=1.0); ev(3.7, 'arrow', v=1.0)
-el(type='ink', kind='write', id='w828', text='৮২৮ মিটার', xy=[TX + 410, 860], size=150, color='blue', t=.1, d=.9)
+el(type='ink', kind='write', id='w828', text='৮২৮ মিটার', xy=[TX + 400, 860], size=110, color='blue', t=.1, d=.9)
 ev(.1, 'ink', d=.9, kind='write')
 
 # ----------------------------------------------------------------- the question (red: the thing to decide)
-el(type='tag', id='tag_wind', text='বাতাস সামলে দাঁড়ায় কীভাবে?', xy=[TX - 1400, 620], size=84, color='red', rot=-1.5, arrive=dict(t=9.7, kind='swing', d=.9, amp=10))
+el(type='tag', id='tag_wind', text='বাতাস সামলে দাঁড়ায় কীভাবে?', xy=[TX - 1020, 620], size=72, color='red', rot=-1.5, arrive=dict(t=9.7, kind='swing', d=.9, amp=10))
 ev(9.7, 'tag', v=.7)
-el(type='ink', kind='write', id='q', text='?', xy=[TX - 520, 1080], size=520, color='red', t=10.5, d=.9)
+el(type='ink', kind='write', id='q', text='?', xy=[TX - 520, 1000], size=520, color='red', t=10.5, d=.9, erase=dict(t=44.0, d=.5))
 ev(10.5, 'ink', d=.9, kind='write')
-el(type='ink', kind='write', id='diary', text='ইঞ্জিনিয়ারিং ডায়েরি', xy=[TX + 560, 430], size=118, color='graphite', t=13.1, d=1.5)
+el(type='ink', kind='write', id='diary', text='ইঞ্জিনিয়ারিং ডায়েরি', xy=[TX + 430, 430], size=92, color='graphite', t=13.1, d=1.5)
 ev(13.1, 'ink', d=1.5, kind='write')
 
 # ----------------------------------------------------------------- the turn: the first sound after the silence is the ground line
@@ -87,16 +87,16 @@ for i in range(46):
 el(type='ink', kind='hatch', id='soil', strokes=soil, lw=6, color='grey', alpha=.55)
 el(type='ink', kind='line', id='leader', points=[[TX, GY + 20], [TX, 2230]], lw=14, color='graphite', t=17.0, d=1.5, arrow=True, ea=1.6, eb=2.0)
 ev(17.0, 'ink', d=1.5, kind='line', v=.6)
-el(type='ink', kind='write', id='under', text='মাটির নিচে', xy=[3560, 1935], size=112, color='graphite', t=18.1, d=1.0, erase=dict(t=41.2, d=.5))
+el(type='ink', kind='write', id='under', text='মাটির নিচে', xy=[3560, 1840], size=112, color='graphite', t=18.1, d=1.0, erase=dict(t=41.2, d=.5, ghost=.03))
 ev(18.1, 'ink', d=1.0, kind='write')
 
 # ----------------------------------------------------------------- the dig: January 2004
 pit = [[2480, GY + 12], [2480, 2160], [3520, 2160], [3520, GY + 12]]
 el(type='ink', kind='line', id='pit', points=pit, lw=10, color='graphite', dash=[40, 24], t=20.6, d=1.9, ea=1.5, eb=1.8)
 ev(20.6, 'ink', d=1.9, kind='line', v=.6)
-el(type='tag', id='tag_2004', text='জানুয়ারি ২০০৪', xy=[3560, 1700], size=72, rot=1.2, arrive=dict(t=21.5, kind='swing', d=.9, amp=9))
-ev(21.5, 'tag', v=.7)
-el(type='ink', kind='write', id='vitti', text='ভিত্তি', xy=[3600, 2310], size=120, color='graphite', t=25.2, d=.9, erase=dict(t=41.2, d=.5))
+el(type='tag', id='tag_2004', text='জানুয়ারি ২০০৪', xy=[3535, 1690], size=66, rot=1.2, arrive=dict(t=21.5, kind='swing', d=.9, amp=9), leave=dict(t=41.4, kind='pop', d=.45, to=[200, -140], spin=18))
+ev(21.5, 'tag', v=.7); ev(41.4, 'pop', v=.5)
+el(type='ink', kind='write', id='vitti', text='ভিত্তি', xy=[3560, 2130], size=110, color='graphite', t=25.2, d=.9, erase=dict(t=41.2, d=.5, ghost=.03))
 ev(25.2, 'ink', d=.9, kind='write')
 
 # ----------------------------------------------------------------- piles: magnets clack on in rhythm
@@ -106,7 +106,7 @@ for i, x in enumerate(PX):
     el(type='ink', kind='line', id=f'pile{i}', points=[[x, 1600], [x, 2090]], lw=34, color='graphite', alpha=.85, t=round(t - .05, 3), d=.3, ea=1.2, eb=2.4)
     el(type='magnet', id=f'pm{i}', xy=[x, 1590], r=24, color='graphite', z=16, arrive=dict(t=round(t - .06, 3), kind='snap', d=.3, lift=90))
     ev(t, 'clack', n=i)
-el(type='tag', id='tag_pile', text='পাইল', xy=[3680, 2090], size=86, rot=-1.0, arrive=dict(t=31.0, kind='swing', d=.9, amp=9))
+el(type='tag', id='tag_pile', text='পাইল', xy=[3535, 1990], size=72, rot=-1.0, arrive=dict(t=31.0, kind='swing', d=.9, amp=9), leave=dict(t=41.5, kind='pop', d=.45, to=[200, -120], spin=-18))
 ev(31.0, 'tag', v=.7)
 
 # ----------------------------------------------------------------- the raft slab
@@ -117,15 +117,15 @@ for i in range(12):
     rods.append(dict(points=[[x, 1530], [x + 50, 1566]], t=round(33.4 + i * .04, 3), d=.08, lw=5, color='grey'))
 el(type='ink', kind='hatch', id='rods', strokes=rods, lw=5, color='grey', alpha=.6)
 ev(32.5, 'ink', d=1.1, kind='line', v=.7); ev(33.65, 'thump', v=1.0)
-el(type='tag', id='tag_raft', text='পুরু কংক্রিটের ভিত্তি', xy=[1900, 1580], size=80, rot=-1.4, arrive=dict(t=34.2, kind='swing', d=.9, amp=9))
+el(type='tag', id='tag_raft', text='পুরু কংক্রিটের ভিত্তি', xy=[2180, 1410], size=64, rot=-1.4, arrive=dict(t=34.2, kind='swing', d=.9, amp=9), leave=dict(t=41.6, kind='pop', d=.45, to=[-200, -140], spin=18))
 ev(34.2, 'tag', v=.7)
 
 # ----------------------------------------------------------------- the load goes down through the piles (blue: measurement)
 for i, x in enumerate((TX - 140, TX, TX + 140)):
     el(type='ink', kind='line', id=f'load{i}', points=[[x, 1330], [x, 2330]], lw=14, color='blue', arrow=True, t=36.7 + i * .4, d=1.6, ea=1.5, eb=2.0)
     ev(36.7 + i * .4, 'ink', d=1.6, kind='line', v=.5)
-el(type='ink', kind='write', id='load_t', text='ভার', xy=[2050, 1400], size=140, color='blue', t=37.4, d=.7, erase=dict(t=41.2, d=.5))
-ev(37.4, 'ink', d=.7, kind='write')
+el(type='ink', kind='write', id='load_t', text='ভার', xy=[2100, 1300], size=120, color='blue', t=39.0, d=.6, erase=dict(t=42.0, d=.5, ghost=.03))
+ev(39.0, 'ink', d=.6, kind='write')
 
 # ----------------------------------------------------------------- the hook: the wind arrives (red)
 for i, (y, x0) in enumerate(((520, 1500), (760, 1700), (1000, 1900))):
@@ -134,24 +134,50 @@ for i, (y, x0) in enumerate(((520, 1500), (760, 1700), (1000, 1900))):
 ev(44.4, 'wind', d=8.5, v=1.0)
 lean = [[TX, GY], [TX + 6, 1100], [TX + 28, 700], [TX + 70, 380], [TX + 125, TOP + 10]]
 el(type='ink', kind='line', id='lean', points=lean, lw=10, color='red', dash=[22, 18], t=46.2, d=1.3, ea=1.6, eb=1.8)
-el(type='ink', kind='write', id='end', text='ভিত হলেই শেষ নয়', xy=[1250, 1300], size=170, color='red', t=47.2, d=2.0)
+el(type='ink', kind='write', id='end', text='ভিত হলেই শেষ নয়', xy=[1500, 1300], size=160, color='red', t=47.2, d=2.0)
 ev(47.2, 'ink', d=2.0, kind='write')
 
 # ----------------------------------------------------------------- camera: ride the line up, step back, drop below ground, hold, step back for the wind
 c = Cam(TX + 300, 920, 1.1)
 c.to(.5, 3.4, x=TX + 120, y=650, z=1.08, a=1.5, b=2.5)          # ride the dimension line up
 c.to(5.2, 2.7, x=TX, y=820, z=.68, a=2, b=2.6)                  # pull back: the whole tower against the question
-c.to(10.2, 3.0, x=TX - 160, y=900, z=.7, a=1.6, b=1.6)          # slow drift toward the question mark
-c.to(13.4, 2.0, x=TX - 120, y=800, z=.7, a=1.8, b=1.8)
-c.to(16.95, 2.4, x=TX, y=1930, z=.84, a=1.6, b=2.6)             # down the leader line, below ground
-c.to(20.3, 3.0, x=TX + 250, y=1960, z=.92, a=2, b=2.4)          # medium on the dig
-c.to(28.0, 1.8, x=TX, y=1950, z=1.0, a=2, b=2.4)                # in on the piles
-c.to(33.0, 2.4, x=TX + 60, y=1900, z=.9, a=2, b=2.4)
-c.to(37.6, 1.8, x=TX, y=1860, z=.74, a=2, b=2.4)                # the judgement frame: slab, piles, load, held
-c.to(39.4, 3.6, z=.76, a=1.6, b=1.6)
-c.to(43.3, 3.2, x=TX - 200, y=860, z=.58, a=1.6, b=3.0)        # pull back and up for the wind
-c.to(46.5, 6.4, z=.6, a=1.4, b=1.4)
+c.to(10.2, 3.0, x=TX - 60, y=860, z=.68, a=1.6, b=1.6)          # slow drift toward the question mark
+c.to(13.4, 2.0, x=TX, y=820, z=.68, a=1.8, b=1.8)
+c.to(16.95, 2.4, x=TX + 100, y=1930, z=.84, a=1.6, b=2.6)       # down the leader line, below ground
+c.to(28.0, 1.8, x=TX + 60, y=1900, z=.9, a=2, b=2.4)            # in on the piles (labels stay inside: 1993-4127)
+c.to(37.6, 1.8, x=TX, y=1800, z=.78, a=2, b=2.4)                # the judgement frame: slab, piles, load, held
+c.to(39.4, 3.6, z=.8, a=1.6, b=1.6)
+c.to(43.3, 3.2, x=TX - 200, y=640, z=.66, a=1.6, b=3.0)         # pull back and up for the wind (the dig stays below the frame)
+c.to(46.5, 6.4, z=.68, a=1.4, b=1.4)
 MB = [dict(t0=5.2, t1=7.4, n=4), dict(t0=16.95, t1=19.0, n=4), dict(t0=43.3, t1=46.0, n=4)]
+
+# ----------------------------------------------------------------- re-time to the voice actually used
+# The shots were designed on the baseline narration (scenes/base_dur.json). When audio/vo/dur.json differs (another voice),
+# every time in the film is warped piecewise-linearly so each picture event keeps its place relative to its line.
+BASE = json.load(open(os.path.join(HERE, 'base_dur.json'))); KEYS = list(LINES.keys()); BT = dict(T); DUR_BASE = DUR
+NT = {}
+for i, k in enumerate(KEYS):
+    NT[k] = BT[k] if i == 0 else round(NT[KEYS[i - 1]] + VO[KEYS[i - 1]] + max(.3, BT[k] - BT[KEYS[i - 1]] - BASE[KEYS[i - 1]]), 3)
+KNOTS = [(0.0, 0.0)] + [(BT[k], NT[k]) for k in KEYS] + [(DUR_BASE, NT['L11'] + DUR_BASE - BT['L11'])]
+def W(t):
+    if t <= KNOTS[0][0]: return t
+    for (a, b), (c_, d_) in zip(KNOTS, KNOTS[1:]):
+        if t <= c_: return b + (t - a) * (d_ - b) / (c_ - a)
+    return KNOTS[-1][1] + (t - KNOTS[-1][0])
+NUM = (int, float)
+def warp(o):
+    if isinstance(o, list):
+        for x in o: warp(x)
+    elif isinstance(o, dict):
+        if isinstance(o.get('t'), NUM) and isinstance(o.get('d'), NUM):
+            t0, d0 = o['t'], o['d']; o['t'] = round(W(t0), 4); o['d'] = round(W(t0 + d0) - W(t0), 4)
+        elif isinstance(o.get('t'), NUM): o['t'] = round(W(o['t']), 4)
+        for k in ('t0', 't1', 'out'):
+            if isinstance(o.get(k), NUM): o[k] = round(W(o[k]), 4)
+        for k, v in o.items():
+            if isinstance(v, (list, dict)): warp(v)
+for obj_ in (E, EV, c.moves, c.shakes, MB): warp(obj_)
+SIL = (round(W(SIL[0]), 3), round(W(SIL[1]), 3)); T = dict(NT); DUR = round(W(DUR_BASE), 3)
 
 # ----------------------------------------------------------------- subtitles: one line each, long ones cut in two
 def cut(text, n):
@@ -173,7 +199,7 @@ scene = dict(dur=DUR, board=dict(w=BW, h=BH, seed=19, texScale=.42, ghosts=110),
              light=dict(x=-1800, y=-2400, r=17000, min=.8),
              tray=[dict(kind='marker', color='graphite', x=1500, rot=-2), dict(kind='marker', color='blue', x=1900, rot=1.5),
                    dict(kind='marker', color='red', x=2260, rot=-1), dict(kind='eraser', x=4400, rot=.5), dict(kind='marker', color='graphite', x=5200, rot=3)],
-             cam=c.json(), mb=MB, elements=E, ev=sorted(EV, key=lambda e: e['t']), subs=subs, cues=dict(T, silence=SIL, bpm=96))
+             cam=c.json(), mb=MB, elements=E, ev=sorted(EV, key=lambda e: e['t']), subs=subs, cues=dict(T, silence=SIL, bpm=96, warp=KNOTS))
 json.dump(scene, open(os.path.join(HERE, 'film.json'), 'w'), ensure_ascii=False, indent=1)
 json.dump([dict(t0=s['t0'], t1=s['t1'], text=s['zh']) for s in subs], open(os.path.join(ROOT, 'audio', 'cues.json'), 'w'), ensure_ascii=False, indent=1)
 print('scenes/film.json', DUR, 's ·', len(E), 'elements ·', len(EV), 'events ·', len(subs), 'subtitle cues')

@@ -11,6 +11,8 @@ ej = json.load(open(f'{ROOT}/events.json')); EV = ej['ev']; DUR = ej['dur']; N =
 scene = json.load(open(f'{ROOT}/scenes/film.json')); T = scene['cues']; SIL = T['silence']
 VO = json.load(open(f'{HERE}/vo/dur.json'))
 BEAT = 60 / 96
+KN = np.array(T['warp'])
+def W(t): return float(np.interp(t, KN[:, 0], KN[:, 1], right=None)) if t <= KN[-1, 0] else float(KN[-1, 1] + t - KN[-1, 0])
 rng = np.random.default_rng(3)
 def sm(x, f=8): return uniform_filter1d(x, size=max(1, int(SR / f)))
 def curve(pts):
@@ -45,7 +47,7 @@ for e in EV:
     elif ty == 'wind':
         d = e['d']; n = int(d * SR); g = bp(noise(d + .05), 180, 1400)[:n] * np.linspace(0, 1, n) ** 1.6 * (.7 + .3 * np.sin(np.arange(n) / SR * 1.7))
         add(fol, g, t, .09, 0)
-for t_w, v in ((5.2, .5), (16.95, .55), (43.3, .6)): add(fol, sfx.whoosh(1.2, .6), t_w - .1, .05 * v * 2, 0)
+for t_w, v in ((W(5.2), .5), (W(16.95), .55), (T['L11'], .6)): add(fol, sfx.whoosh(1.2, .6), t_w - .1, .05 * v * 2, 0)
 
 # ---- music: a small rhythmic ensemble, walking to brisk. Silence 15.9-16.8, the first sound after it is the pen on the ground line.
 mus = np.zeros((N, 2))
@@ -62,23 +64,23 @@ def bar_notes(t0, t1, density):
     while t < t1 - .01:
         bass(LINE[i % len(LINE)], t, .5, .65); i += 1; t += BEAT * density
 # A 0 - 15.7: bass on the beat, wood on the off-beats, no kit
-bar_notes(0.5, 15.5, 1)
+bar_notes(0.5, W(15.5), 1)
 t = 0.5 + BEAT / 2
-while t < 15.4: wood(t, .6); t += BEAT * 2
+while t < W(15.4): wood(t, .6); t += BEAT * 2
 # B 16.8 -> 43.3: the turn stab, then brisk: kit joins when the piles clack in (28.4)
 brass(55.0, SIL[1] + .02, 1.6, 1.0)
-bar_notes(SIL[1] + BEAT, 43.3, 1)
+bar_notes(SIL[1] + BEAT, T['L11'], 1)
 t = SIL[1] + BEAT
-while t < 43.3:
+while t < T['L11']:
     wood(t + BEAT / 2, .7); t += BEAT
-t = 28.4
-while t < 43.2: kick(t, .9); kick(t + BEAT * 2, .7); t += BEAT * 4
-t = 28.4
-while t < 43.2: hat(t, .8); hat(t + BEAT / 2, .5); t += BEAT
+t = T['L8']
+while t < T['L11'] - .1: kick(t, .9); kick(t + BEAT * 2, .7); t += BEAT * 4
+t = T['L8']
+while t < T['L11'] - .1: hat(t, .8); hat(t + BEAT / 2, .5); t += BEAT
 # C 43.3 -> end: thins to bass, a held low note at the end
-bar_notes(43.3, 49.0, 2)
-brass(55.0, 48.8, 4.0, .8)
-mgain = curve([(0, 1), (15.2, 1), (15.7, 0), (16.78, 0), (16.8, 1), (DUR, 1)])
+bar_notes(T['L11'], W(49.0), 2)
+brass(55.0, W(48.8), 4.0, .8)
+mgain = curve([(0, 1), (SIL[0] - .7, 1), (SIL[0] - .2, 0), (SIL[1] - .02, 0), (SIL[1], 1), (DUR, 1)])
 mgain = sm(mgain, 20); mus *= mgain[:, None]
 
 # ---- voice
